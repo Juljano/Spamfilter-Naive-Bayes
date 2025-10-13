@@ -6,8 +6,9 @@ def run_streamlit_app():
     python_path = r"C:\Users\JML\AppData\Local\Programs\Python\Python312\python.exe"
     script_path = r"C:\Users\JML\KI - Projekte\Spamfilter-Naive-Bayes\gui.py"
     result = subprocess.run([python_path, "-m", "streamlit", "run", script_path],capture_output=True, text=True)
-
-    #rating_message(user_input)
+    print(f"Result: {result.stdout}")
+    if result.stdout:
+        rating_message(result)
 
 def rating_message(user_input):
     x, y = read_trainings_data('Training/spam.csv')
