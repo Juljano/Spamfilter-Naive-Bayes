@@ -15,7 +15,6 @@ def read_trainings_data(path):
 def oversample_trainings_data(x,y):
     x_array = np.array(x).reshape(-1, 1) #Convert 1D-Array to 2D-Array
     X_res, y_res = RandomOverSampler(random_state=42).fit_resample(x_array, y)
-    print("Resampled Labels:", y_res)
 
     return X_res, y_res
 
@@ -23,4 +22,4 @@ def oversample_trainings_data(x,y):
 
 if __name__ == "__main__":
     x, y = read_trainings_data('Training/spam.csv')
-    oversample_trainings_data(x,y)
+    resampled_x , resampled_y = oversample_trainings_data(x,y)
