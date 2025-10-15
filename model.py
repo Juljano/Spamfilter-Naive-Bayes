@@ -41,7 +41,7 @@ def train_model(x, y):
     return model, vectorizer
 
 
-def aks_model(vectorizer, model, user_input):
+def ask_model(vectorizer, model, user_input):
     new_input = [user_input]
     new_vector = vectorizer.transform(new_input)
     prediction = model.predict(new_vector)
