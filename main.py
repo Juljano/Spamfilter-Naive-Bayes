@@ -1,63 +1,29 @@
-import numpy as np
-import pandas as pd
-from imblearn.over_sampling import RandomOverSampler
-from sklearn import metrics
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.metrics import classification_report
-from sklearn.model_selection import train_test_split
-from sklearn.naive_bayes import MultinomialNB
+import threading
+from model import *
+import subprocess
 
-
-def read_trainings_data(path):
+def run_streamlit_app():
     try:
-        read_csv =  pd.read_csv(path,  encoding='latin1') # Downloaded from Kaggle.com
-        x = read_csv["v2"].tolist()
-        y = read_csv["v1"].tolist()
-        return x,y
-    except FileNotFoundError:
-        print("File not found - Please check the folder name")
-        return None,None
+        python_path = r"C:\Users\JML\AppData\Local\Programs\Python\Python312\python.exe"
+        script_path = r"C:\Users\JML\KI - Projekte\Spamfilter-Naive-Bayes\gui.py"
+        result = subprocess.Popen([python_path, "-m", "streamlit", "run", script_path],stdout=subprocess.PIPE,stderr=subprocess.PIPE,text=True)
+        if result:
+            for line in result.stdout:
+                if line.strip().startswith("User-input:"):
+                    print(line.strip())
+                    rating_message(line.strip())
+    except Exception as error:
+        print(F"Something went wrong {error}")
 
-def oversample_trainings_data(x,y):
-    x_array = np.array(x).reshape(-1, 1) #Convert 1D-Array to 2D-Array
-    X_res, y_res = RandomOverSampler(random_state=42).fit_resample(x_array, y) #duplicate spam-messages (x)
-    return X_res.flatten().tolist(), y_res
+def rating_message(user_input):
+    x, y = read_trainings_data('Training/spam.csv')
+    resampled_x, resampled_y = oversample_trainings_data(x, y)
+    model, vectorizer = train_model(resampled_x, resampled_y)
+    if model and vectorizer:
+        ask_model(vectorizer, model, user_input)
 
-
-def train_model(x, y):
-    vectorizer = CountVectorizer()
-    x_vector = vectorizer.fit_transform(x)
-
-    x_train, x_test, y_train, y_test = train_test_split(x_vector, y, test_size=0.2, random_state=42)
-
-    model = MultinomialNB()
-    model.fit(x_train, y_train)
-
-    y_pred = model.predict(x_test)
-
-    accuracy = metrics.accuracy_score(y_test, y_pred)
-    print(f"Genauigkeit: {accuracy:.2f}")
-    print(classification_report(y_test, y_pred))
-
-    return model, vectorizer
-
-
-def aks_model(vectorizer, model):
-    new_input = ["I am writing to request a meeting to discuss updates on our current project. I believe it would be beneficial for us to review our progress and plan the next steps."]
-    new_vector = vectorizer.transform(new_input)
-    prediction = model.predict(new_vector)
-
-    print(f"Vorhersage für '{new_input[0]}': {prediction[0]}")
-
-    if prediction[0] == "spam":
-        print("Diese Nachricht ist leider Spam - Bitte sofort Löschen!")
-    elif prediction[0] == "ham":
-        print("Diese Nachricht ist Vertrauenswürdig - Weitermachen Kollege!")
 
 if __name__ == "__main__":
-    x, y = read_trainings_data('Training/spam.csv')
-    resampled_x , resampled_y = oversample_trainings_data(x,y)
-    model, vectorizer = train_model(resampled_x, resampled_y)
-    aks_model(vectorizer, model)
-
+    streamlit_thread = threading.Thread(target=run_streamlit_app())
+    streamlit_thread.start()
 
