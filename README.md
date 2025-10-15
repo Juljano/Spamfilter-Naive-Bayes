@@ -10,6 +10,7 @@ F1: 0.98 -> Modell versteht alle Klasse gleich genau und mogelt nicht.
 
 
 **Frontend**
+
 Ich habe am Anfang **Streamlit** verwendet, aber es ist nicht möglich, von außen neue Informationen einzureichen. Deswegen nutze ich lieber **Flask**.
 
 
