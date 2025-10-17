@@ -13,4 +13,22 @@ F1: 0.98 -> Modell versteht alle Klasse gleich genau und mogelt nicht.
 
 Ich habe am Anfang **Streamlit** verwendet, aber es ist nicht möglich, von außen neue Informationen einzureichen. Deswegen nutze ich lieber **Flask**.
 
+----
 
+
+**Die Ergebnisse**
+
+Eine Vertrauenswürdige Nachricht:
+
+![Ham Message](https://github.com/Juljano/Spamfilter-Naive-Bayes/raw/main/images/ham-message.png)
+
+
+
+
+
+
+
+
+Eine Spam-Nachricht: 
+
+![Spam Message](https://github.com/Juljano/Spamfilter-Naive-Bayes/raw/main/images/spam-message.png)
