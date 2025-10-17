@@ -2,9 +2,10 @@ from model import *
 from webserver import Webserver
 
 def train_naives_bayes():
-    x, y = read_trainings_data('Training/spam.csv')
-    resampled_x, resampled_y = oversample_trainings_data(x, y)
-    train_model(resampled_x, resampled_y)
+    if not os.path.exists("naive-bayes/model.pkl") and not os.path.exists("naive-bayes/vectorizer.pkl"):
+        x, y = read_trainings_data('Training/spam.csv')
+        resampled_x, resampled_y = oversample_trainings_data(x, y)
+        train_model(resampled_x, resampled_y)
 
 
 if __name__ == "__main__":
