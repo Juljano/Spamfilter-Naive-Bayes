@@ -1,3 +1,6 @@
+import os
+
+import joblib
 import numpy as np
 import pandas as pd
 from imblearn.over_sampling import RandomOverSampler
@@ -38,20 +41,30 @@ def train_model(x, y):
     print(f"Genauigkeit: {accuracy:.2f}")
     print(classification_report(y_test, y_pred))
 
-    return model, vectorizer
+    joblib.dump(vectorizer, 'naive-bayes/vectorizer.pkl')
+    joblib.dump(model, 'naive-bayes/model.pkl')
+    print("Model saved")
 
 
-def ask_model(vectorizer, model, user_input):
-    new_input = [user_input]
-    new_vector = vectorizer.transform(new_input)
-    prediction = model.predict(new_vector)
+def ask_model(user_input):
 
-    print(f"Vorhersage für '{new_input[0]}': {prediction[0]}")
+    if os.path.exists("naive-bayes/model.pkl") and os.path.exists("naive-bayes/vectorizer.pkl"):
 
-    if prediction[0] == "spam":
-        print("Diese Nachricht ist leider Spam - Bitte sofort Löschen!")
-    elif prediction[0] == "ham":
-        print("Diese Nachricht ist Vertrauenswürdig - Weitermachen Kollege!")
+        load_model = joblib.load("naive-bayes/model.pkl")
+        load_vectorizer = joblib.load("naive-bayes/vectorizer.pkl")
+
+        new_input = [user_input]
+        new_vector = load_vectorizer.transform(new_input)
+        prediction = load_model.predict(new_vector)
+
+        print(f"Vorhersage für '{new_input[0]}': {prediction[0]}")
+
+        if prediction[0] == "spam":
+            print("Diese Nachricht ist leider Spam - Bitte sofort Löschen!")
+        elif prediction[0] == "ham":
+            print("Diese Nachricht ist Vertrauenswürdig - Weitermachen Kollege!")
+
+        return prediction[0]
 
 
 
